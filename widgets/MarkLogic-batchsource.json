@@ -1,0 +1,281 @@
+{
+  "metadata": {
+    "spec-version": "1.5"
+  },
+  "display-name": "MarkLogic",
+  "configuration-groups": [
+    {
+      "label": "Basic",
+      "properties": [
+        {
+          "widget-type": "textbox",
+          "label": "Reference Name",
+          "name": "referenceName",
+          "widget-attributes": {
+            "placeholder": "Name used to identify this source for lineage"
+          }
+        },
+        {
+          "widget-type": "textbox",
+          "label": "Host",
+          "name": "host"
+        },
+        {
+          "widget-type": "number",
+          "label": "Port",
+          "name": "port",
+          "widget-attributes": {
+            "default": "8002"
+          }
+        },
+        {
+          "widget-type": "textbox",
+          "label": "Database",
+          "name": "database"
+        },
+        {
+          "name": "inputMethod",
+          "label": "Input method",
+          "widget-type": "radio-group",
+          "widget-attributes": {
+            "layout": "inline",
+            "default": "query",
+            "options": [
+              {
+                "id": "query",
+                "label": "Query"
+              },
+              {
+                "id": "path",
+                "label": "Path"
+              }
+            ]
+          }
+        },
+        {
+          "widget-type": "textbox",
+          "label": "Path",
+          "name": "path"
+        },
+        {
+          "widget-type": "textarea",
+          "label": "Input Query",
+          "name": "query",
+          "widget-attributes": {
+            "rows": "4"
+          }
+        }
+      ]
+    },
+    {
+      "label": "Credentials",
+      "properties": [
+        {
+          "widget-type": "textbox",
+          "label": "Username",
+          "name": "user"
+        },
+        {
+          "widget-type": "password",
+          "label": "Password",
+          "name": "password"
+        }
+      ]
+    },
+    {
+      "label": "Connection",
+      "properties": [
+        {
+          "name": "connectionType",
+          "label": "Connection type",
+          "widget-type": "radio-group",
+          "widget-attributes": {
+            "layout": "inline",
+            "default": "direct",
+            "options": [
+              {
+                "id": "direct",
+                "label": "Direct"
+              },
+              {
+                "id": "gateway",
+                "label": "Gateway"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authenticationType",
+          "label": "Authentication Type",
+          "widget-type": "radio-group",
+          "widget-attributes": {
+            "layout": "inline",
+            "default": "digest",
+            "options": [
+              {
+                "id": "digest",
+                "label": "Digest"
+              },
+              {
+                "id": "ssl",
+                "label": "SSL"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "label": "Advanced",
+      "properties": [
+        {
+          "widget-type": "textbox",
+          "label": "File Name Field",
+          "name": "fileField"
+        },
+        {
+          "widget-type": "select",
+          "label": "Format",
+          "name": "format",
+          "widget-attributes": {
+            "values": [
+              "auto",
+              "xml",
+              "json",
+              "text",
+              "blob",
+              "delimited"
+            ],
+            "default": "blob"
+          }
+        },
+        {
+          "widget-type": "textbox",
+          "label": "Delimiter",
+          "name": "delimiter",
+          "widget-attributes": {
+            "placeholder": "Delimiter if the format is 'delimited'"
+          }
+        },
+        {
+          "widget-type": "textbox",
+          "label": "Payload Field",
+          "name": "payloadField",
+          "widget-attributes": {
+            "default": "payload"
+          }
+        },
+        {
+          "widget-type": "textarea",
+          "label": "Bounding Query",
+          "name": "boundingQuery",
+          "widget-attributes": {
+            "default": "xquery version \"1.0-ml\";\nimport module namespace hadoop = \"http://marklogic.com/xdmp/hadoop\" at \"/MarkLogic/hadoop.xqy\"; \nhadoop:get-splits('', 'fn:doc()', 'cts:and-query(())')",
+            "rows": "4"
+          }
+        },
+        {
+          "widget-type": "number",
+          "label": "Max Splits",
+          "name": "maxSplits",
+          "widget-attributes": {
+            "default": 1000
+          }
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "name": "queryFilter",
+      "condition": {
+        "property": "inputMethod",
+        "operator": "equal to",
+        "value": "query"
+      },
+      "show": [
+        {
+          "type": "property",
+          "name": "query"
+        }
+      ]
+    },
+    {
+      "name": "pathFilter",
+      "condition": {
+        "property": "inputMethod",
+        "operator": "equal to",
+        "value": "path"
+      },
+      "show": [
+        {
+          "type": "property",
+          "name": "path"
+        }
+      ]
+    },
+    {
+      "name": "delimitedFilter",
+      "condition": {
+        "property": "format",
+        "operator": "equal to",
+        "value": "delimited"
+      },
+      "show": [
+        {
+          "type": "property",
+          "name": "delimiter"
+        }
+      ]
+    },
+    {
+      "name": "payloadFilter",
+      "condition": {
+        "expression": "format == \"auto\" || format == \"text\" || format == \"blob\""
+      },
+      "show": [
+        {
+          "type": "property",
+          "name": "payloadField"
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "name": "schema",
+      "label": "schema",
+      "widget-type": "schema",
+      "widget-attributes": {
+        "default-schema": {
+          "name": "etlSchemaBody",
+          "type": "record",
+          "fields": [
+            {
+              "name": "payload",
+              "type": "bytes"
+            }
+          ]
+        },
+        "schema-types": [
+          "boolean",
+          "int",
+          "long",
+          "float",
+          "double",
+          "bytes",
+          "string"
+        ],
+        "schema-default-type": "string",
+        "property-watch": "format"
+      }
+    }
+  ],
+  "jump-config": {
+    "datasets": [
+      {
+        "ref-property-name": "referenceName"
+      }
+    ]
+  }
+}
