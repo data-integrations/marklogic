@@ -1,0 +1,8 @@
+{
+  "rest-api": {
+    "name": "MyDBServer",
+    "database": "mydb",
+    "modules-database": "mydb-modules",
+    "port": "8011"
+  }
+}
