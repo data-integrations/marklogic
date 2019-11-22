@@ -23,3 +23,10 @@ Marklogic connector
    ```bash
    mvn clean test
    ```   
+   
+## Properties
+* **marklogic.host** - Server host. Default: localhost.
+* **marklogic.port** - Server port. Default: 8011.
+* **marklogic.database** - Server database for test databases. Default: mydb.
+* **marklogic.username** - Server username. Default: root.
+* **marklogic.password** - Server password. Default: 123Qwe123.

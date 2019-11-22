@@ -1,0 +1,20 @@
+[
+  {
+    "string_field": "user1",
+    "boolean_field": false,
+    "int_field": 1,
+    "long_field": 1,
+    "float_field": 1.1,
+    "double_field": 1.1,
+    "binary_field": [117, 115, 101, 114, 49]
+  },
+  {
+    "string_field": "user2",
+    "boolean_field": true,
+    "int_field": 2,
+    "long_field": 2,
+    "float_field": 2.2,
+    "double_field": 2.2,
+    "binary_field": [117, 115, 101, 114, 50]
+  }
+]

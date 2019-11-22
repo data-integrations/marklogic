@@ -101,6 +101,59 @@ public class MarkLogicSourceConfig extends BaseBatchMarkLogicConfig {
     this.schema = schema;
   }
 
+  private MarkLogicSourceConfig(Builder builder) {
+    super(
+      builder.referenceName,
+      builder.host,
+      builder.port,
+      builder.database,
+      builder.user,
+      builder.password,
+      builder.authenticationType,
+      builder.connectionType,
+      builder.format,
+      builder.delimiter
+    );
+
+    inputMethod = builder.inputMethod;
+    query = builder.query;
+    path = builder.path;
+    boundingQuery = builder.boundingQuery;
+    maxSplits = builder.maxSplits;
+    fileField = builder.fileField;
+    payloadField = builder.payloadField;
+    schema = builder.schema;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(MarkLogicSourceConfig copy) {
+    Builder builder = new Builder();
+
+    builder.setHost(copy.getHost());
+    builder.setPort(copy.getPort());
+    builder.setDatabase(copy.getDatabase());
+    builder.setUser(copy.getUser());
+    builder.setPassword(copy.getPassword());
+    builder.setAuthenticationType(copy.getAuthenticationTypeString());
+    builder.setConnectionType(copy.getConnectionTypeString());
+    builder.setReferenceName(copy.getReferenceName());
+    builder.setFormat(copy.getFormatString());
+    builder.setDelimiter(copy.getDelimiter());
+    builder.setInputMethod(copy.getInputMethodString());
+    builder.setQuery(copy.getQuery());
+    builder.setPath(copy.getPath());
+    builder.setBoundingQuery(copy.getBoundingQuery());
+    builder.setMaxSplits(copy.getMaxSplits());
+    builder.setFileField(copy.getFileField());
+    builder.setPayloadField(copy.getPayloadField());
+    builder.setSchema(copy.getSchema());
+
+    return builder;
+  }
+
   @Nullable
   public String getQuery() {
     return query;
@@ -170,7 +223,10 @@ public class MarkLogicSourceConfig extends BaseBatchMarkLogicConfig {
         .withConfigProperty(INPUT_METHOD);
     }
 
-    if ((method != null && !containsMacro(BOUNDING_QUERY) && Strings.isNullOrEmpty(boundingQuery))) {
+    // If 'Query' or 'Path' are specified than 'Bounding query' must be set
+    if ((method != null && ((!containsMacro(QUERY) && !Strings.isNullOrEmpty(query)) ||
+      (!containsMacro(PATH) && !Strings.isNullOrEmpty(path))) &&
+      !containsMacro(BOUNDING_QUERY) && Strings.isNullOrEmpty(boundingQuery))) {
       collector.addFailure("Bounding query must be specified.", null)
         .withConfigProperty(BOUNDING_QUERY);
     }
@@ -249,5 +305,126 @@ public class MarkLogicSourceConfig extends BaseBatchMarkLogicConfig {
   public enum InputMethod {
     QUERY,
     PATH
+  }
+
+  /**
+   * Builder for creating a {@link MarkLogicSourceConfig}.
+   */
+  public static final class Builder {
+    private String host;
+    private Integer port;
+    private String database;
+    private String user;
+    private String password;
+    private String authenticationType;
+    private String connectionType;
+    private String referenceName;
+    private String format;
+    private String delimiter;
+    private String inputMethod;
+    private String query;
+    private String path;
+    private String boundingQuery;
+    private Integer maxSplits;
+    private String fileField;
+    private String payloadField;
+    private String schema;
+
+    private Builder() {
+    }
+
+    public Builder setHost(String host) {
+      this.host = host;
+      return this;
+    }
+
+    public Builder setPort(Integer port) {
+      this.port = port;
+      return this;
+    }
+
+    public Builder setDatabase(String database) {
+      this.database = database;
+      return this;
+    }
+
+    public Builder setUser(String user) {
+      this.user = user;
+      return this;
+    }
+
+    public Builder setPassword(String password) {
+      this.password = password;
+      return this;
+    }
+
+    public Builder setAuthenticationType(String authenticationType) {
+      this.authenticationType = authenticationType;
+      return this;
+    }
+
+    public Builder setConnectionType(String connectionType) {
+      this.connectionType = connectionType;
+      return this;
+    }
+
+    public Builder setReferenceName(String referenceName) {
+      this.referenceName = referenceName;
+      return this;
+    }
+
+    public Builder setFormat(String format) {
+      this.format = format;
+      return this;
+    }
+
+    public Builder setDelimiter(String delimiter) {
+      this.delimiter = delimiter;
+      return this;
+    }
+
+    public Builder setInputMethod(String inputMethod) {
+      this.inputMethod = inputMethod;
+      return this;
+    }
+
+    public Builder setQuery(String query) {
+      this.query = query;
+      return this;
+    }
+
+    public Builder setPath(String path) {
+      this.path = path;
+      return this;
+    }
+
+    public Builder setBoundingQuery(String boundingQuery) {
+      this.boundingQuery = boundingQuery;
+      return this;
+    }
+
+    public Builder setMaxSplits(Integer maxSplits) {
+      this.maxSplits = maxSplits;
+      return this;
+    }
+
+    public Builder setFileField(String fileField) {
+      this.fileField = fileField;
+      return this;
+    }
+
+    public Builder setPayloadField(String payloadField) {
+      this.payloadField = payloadField;
+      return this;
+    }
+
+    public Builder setSchema(String schema) {
+      this.schema = schema;
+      return this;
+    }
+
+    public MarkLogicSourceConfig build() {
+      return new MarkLogicSourceConfig(this);
+    }
   }
 }

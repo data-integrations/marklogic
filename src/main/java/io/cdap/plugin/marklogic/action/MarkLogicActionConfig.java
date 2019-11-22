@@ -40,6 +40,38 @@ public class MarkLogicActionConfig extends BaseMarkLogicConfig {
     this.query = query;
   }
 
+  private MarkLogicActionConfig(Builder builder) {
+    super(
+      builder.host,
+      builder.port,
+      builder.database,
+      builder.user,
+      builder.password,
+      builder.authenticationType,
+      builder.connectionType
+    );
+    query = builder.query;
+  }
+
+  public static Builder builder() {
+    return new Builder();
+  }
+
+  public static Builder builder(MarkLogicActionConfig copy) {
+    Builder builder = new Builder();
+
+    builder.setHost(copy.getHost());
+    builder.setPort(copy.getPort());
+    builder.setDatabase(copy.getDatabase());
+    builder.setUser(copy.getUser());
+    builder.setPassword(copy.getPassword());
+    builder.setAuthenticationType(copy.getAuthenticationTypeString());
+    builder.setConnectionType(copy.getConnectionTypeString());
+    builder.setQuery(copy.getQuery());
+
+    return builder;
+  }
+
   public String getQuery() {
     return query;
   }
@@ -49,7 +81,69 @@ public class MarkLogicActionConfig extends BaseMarkLogicConfig {
     super.validate(collector);
 
     if (!containsMacro(QUERY) && Strings.isNullOrEmpty(query)) {
-      collector.addFailure("Host must be specified.", null).withConfigProperty(QUERY);
+      collector.addFailure("Query must be specified.", null).withConfigProperty(QUERY);
+    }
+  }
+
+  /**
+   * Builder for creating a {@link MarkLogicActionConfig}.
+   */
+  public static final class Builder {
+
+    private String host;
+    private Integer port;
+    private String database;
+    private String user;
+    private String password;
+    private String authenticationType;
+    private String connectionType;
+    private String query;
+
+    private Builder() {
+    }
+
+    public Builder setHost(String host) {
+      this.host = host;
+      return this;
+    }
+
+    public Builder setPort(Integer port) {
+      this.port = port;
+      return this;
+    }
+
+    public Builder setDatabase(String database) {
+      this.database = database;
+      return this;
+    }
+
+    public Builder setUser(String user) {
+      this.user = user;
+      return this;
+    }
+
+    public Builder setPassword(String password) {
+      this.password = password;
+      return this;
+    }
+
+    public Builder setAuthenticationType(String authenticationType) {
+      this.authenticationType = authenticationType;
+      return this;
+    }
+
+    public Builder setConnectionType(String connectionType) {
+      this.connectionType = connectionType;
+      return this;
+    }
+
+    public Builder setQuery(String query) {
+      this.query = query;
+      return this;
+    }
+
+    public MarkLogicActionConfig build() {
+      return new MarkLogicActionConfig(this);
     }
   }
 }
